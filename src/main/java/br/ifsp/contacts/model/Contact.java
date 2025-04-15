@@ -1,11 +1,13 @@
 package br.ifsp.contacts.model;
 
 import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Contact {
@@ -13,11 +15,17 @@ public class Contact {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@NotNull
 	private String nome;
+	
+	@Size(min = 8, max = 15)
 	private String telefone;
+
+	@Email
 	private String email;
 	
-	private List<Address> address;
+	private List<Integer> address;
 	
 	
 	public Contact() {
@@ -30,7 +38,7 @@ public class Contact {
 		this.telefone = telefone;
 		this.email = email;
 	}
-
+	
 
 	public Long getId() {
 		return id;
@@ -72,12 +80,12 @@ public class Contact {
 	}
 
 
-	public List<Address> getAddress() {
+	public List<Integer> getAddress() {
 		return address;
 	}
 
 
-	public void setAddress(List<Address> address) {
+	public void setAddress(List<Integer> address) {
 		this.address = address;
 	}
 
