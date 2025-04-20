@@ -1,9 +1,16 @@
 package br.ifsp.contacts.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Address {
@@ -12,19 +19,33 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank(message = "A rua não pode estar vazia")
 	private String rua;
-	private String cidade;
-	private String estado;
-	private String cep;
-	private Long contactId;
 	
-	public Address(Long id, String rua, String cidade, String estado, String cep, Long contactId) {
+	@NotBlank(message = "A cidade não pode estar vazia")
+	private String cidade;
+	
+	@NotBlank(message = "O estado não pode estar vazio")
+    @Size(min = 2, max = 2, message = "O estado deve ter exatamente 2 caracteres (sigla)")
+    @Pattern(regexp = "[A-Z]{2}", message = "O estado deve ser representado por duas letras maiúsculas")
+	private String estado;
+	
+	@NotBlank(message = "O CEP não pode estar vazio")
+    @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve estar no formato 99999-999")
+	private String cep;
+	
+	@ManyToOne
+	@JoinColumn(name = "contact_id", nullable = false)
+	@JsonBackReference
+	private Contact contact;
+
+	public Address(Long id, String rua, String cidade, String estado, String cep, Contact contact) {
 		this.id = id;
 		this.rua = rua;
 		this.cidade = cidade;
 		this.estado = estado;
 		this.cep = cep;
-		this.contactId = contactId;
+		this.contact = contact;
 	}
 
 	public Address() {
@@ -38,6 +59,7 @@ public class Address {
 		this.id = id;
 	}
 
+	
 	public String getRua() {
 		return rua;
 	}
@@ -70,12 +92,12 @@ public class Address {
 		this.cep = cep;
 	}
 
-	public Long getContactId() {
-		return contactId;
+	public Contact getContact() {
+		return contact;
 	}
 
-	public void setContactId(Long contactId) {
-		this.contactId = contactId;
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 
 }
